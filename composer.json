@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "RG\\": "app/"
+    }
+  },
+  "require": {
+    "swiftmailer/swiftmailer": "^6.0",
+    "pda/pheanstalk": "^4.0",
+    "symfony/dotenv": "^5.2"
+  }
+
+}
