@@ -10,7 +10,7 @@ For using this application you need:
 1. systemd service definition (optional)
 1. firewall settings (optional)
 
-# Input format
+# beanstalk query format
 
 ```
    "theme":"Example",
