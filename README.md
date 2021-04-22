@@ -13,14 +13,14 @@ For using this application you need:
 # Input format
 
 > {  
->	 "destination": [
->		 "name1@example.com",
->		 "name2@example.com"
->	 ],
->	 "theme": "Example",
->	 "content": "Example content",
->	 "attachment": [
->		 "http://example.com/file.jpg",
->		 "http://example.com/file.odt"
->	 ]
+>	  "destination": [
+>		  "name1@example.com",
+>		  "name2@example.com"
+>	  ],
+>	  "theme": "Example",
+>	  "content": "Example content",
+>	  "attachment": [
+>		  "http://example.com/file.jpg",
+>		  "http://example.com/file.odt"
+>	  ]
 > }
