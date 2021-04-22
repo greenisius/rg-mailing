@@ -12,9 +12,9 @@ For using this application you need:
 
 # Input format
 
-> {  
->	  "destination": [
->		  "name1@example.com",
+> {\  
+>	  "destination": [\
+>		  "name1@example.com",\
 >		  "name2@example.com"
 >	  ],
 >	  "theme": "Example",
