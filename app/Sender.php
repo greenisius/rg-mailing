@@ -45,10 +45,12 @@ class Sender
             $signer = new \Swift_Signers_DKIMSigner($RSA, $_ENV['MAIL_DOMAIN'], $_ENV['MAIL_SELECTOR']);
             $this->message->attachSigner($signer);
 
-            return $this->mailer->send($this->message);
+            $this->mailer->send($this->message);
 
         } catch (\Throwable $e) {
             $this->log->fail($task);
         }
+
+        $this->log->success($task);
     }
 }
