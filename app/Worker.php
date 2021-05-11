@@ -4,6 +4,7 @@ namespace RG;
 
 use Pheanstalk\Pheanstalk;
 use RG\Sender;
+use RG\Log;
 
 class Worker
 {
@@ -11,8 +12,12 @@ class Worker
 
     private $sender;
 
+    private $log;
+
     public function __construct()
     {
+        $this->log = new Log();
+
         $this->sender = new Sender();
 
         $this->worker = Pheanstalk::create($_ENV['QUERY_IP'], $_ENV['QUERY_PORT']);
@@ -32,6 +37,8 @@ class Worker
         $task = $this->task();
 
         $this->sender->send($task);
+
+        $this->log->success($task);
 
         $this->worker->delete($this->job);
     }
