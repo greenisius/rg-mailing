@@ -4,14 +4,21 @@
 namespace RG;
 
 
+use RG\Log;
+
+
 class Sender
 {
     private $message;
 
     private $mailer;
 
+    private $log;
+
     public function __construct()
     {
+        $this->log = new Log();
+
         $transport = new \Swift_SmtpTransport($_ENV['EMAIL_TRANSPORT_IP'], $_ENV['EMAIL_TRANSPORT_PORT']);
         $transport
             ->setUsername($_ENV['EMAIL_TRANSPORT_USERNAME'])
@@ -40,8 +47,8 @@ class Sender
 
             return $this->mailer->send($this->message);
 
-        } catch (\Exception $e) {
-            return $e->getMessage();
+        } catch (\Throwable $e) {
+            $this->log->fail($task);
         }
     }
 }

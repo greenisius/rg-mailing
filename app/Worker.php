@@ -3,6 +3,7 @@
 namespace RG;
 
 use Pheanstalk\Pheanstalk;
+use RG\Sender;
 
 class Worker
 {
