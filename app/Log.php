@@ -15,7 +15,7 @@ class Log
 
         $emails = implode(",",$task->destination) ?: 'пустой адрес';
 
-        file_put_contents($_ENV['LOG'], "Отправлено письмо на $emails. Тема: $task->theme. Содержание: $task->content\n", FILE_APPEND);
+        file_put_contents($_ENV['LOG'], "$time: Отправлено письмо на $emails. Тема: $task->theme. Содержание: $task->content\n", FILE_APPEND);
     }
 
     public function fail(Task $task)

@@ -49,6 +49,7 @@ class Sender
 
         } catch (\Throwable $e) {
             $this->log->fail($task);
+            return;
         }
 
         $this->log->success($task);
