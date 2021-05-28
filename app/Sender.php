@@ -33,10 +33,13 @@ class Sender
     {
         try {
             $this->message
-                ->setFrom([$_ENV['EMAIL_SENDER_ADDRESS'] => $_ENV['EMAIL_SENDER_NAME']])
+                ->setFrom([$task->from ?? $_ENV['EMAIL_SENDER_ADDRESS'] => $task->sender ?? $_ENV['EMAIL_SENDER_NAME']])
+                ->setTo($task->destination)
                 ->setBcc($task->destination)
                 ->setSubject($task->theme)
-                ->setBody($task->content);
+                ->setBody($task->content)
+                ->getHeaders()
+                ->addTextHeader('List-Unsubscribe', $task->unsubscribe);
             foreach ($task->attachment as $path) {
                 $this->message->attach(\Swift_Attachment::fromPath($path));
             }

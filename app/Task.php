@@ -10,6 +10,7 @@ class Task
     public $theme;
     public $content;
     public $attachment;
+    public $unsubscribe;
 
     public function __construct(array $data = [])
     {
