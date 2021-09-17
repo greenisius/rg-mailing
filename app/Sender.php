@@ -31,30 +31,43 @@ class Sender
 
     public function send(Task $task)
     {
-        try {
-            $this->message
-                ->setFrom([$task->from ?? $_ENV['EMAIL_SENDER_ADDRESS'] => $task->sender ?? $_ENV['EMAIL_SENDER_NAME']])
-                ->setTo($task->destination)
-                ->setBcc($task->destination)
-                ->setSubject($task->theme)
-                ->setBody($task->content)
-                ->getHeaders()
-                ->addTextHeader('List-Unsubscribe', $task->unsubscribe);
-            foreach ($task->attachment as $path) {
-                $this->message->attach(\Swift_Attachment::fromPath($path));
+        foreach ($task->destination as $destination) {
+
+            $taskUnit = self::prepareUnit($task, $destination);
+
+            try {
+                $this->message
+                    ->setFrom([$taskUnit->from ?? $_ENV['EMAIL_SENDER_ADDRESS'] => $taskUnit->sender ?? $_ENV['EMAIL_SENDER_NAME']])
+                    ->setTo($destination)
+                    ->setSubject($taskUnit->theme)
+                    ->setBody($taskUnit->content)
+                    ->getHeaders()
+                    ->addTextHeader('List-Unsubscribe', $taskUnit->unsubscribe);
+                foreach ($taskUnit->attachment as $path) {
+                    $this->message->attach(\Swift_Attachment::fromPath($path));
+                }
+
+                $RSA = openssl_get_privatekey($_ENV['MAIL_RSA_PRIV'], $_ENV['MAIL_RSA_PASSPHRASE']);
+                $signer = new \Swift_Signers_DKIMSigner($RSA, $_ENV['MAIL_DOMAIN'], $_ENV['MAIL_SELECTOR']);
+                $this->message->attachSigner($signer);
+
+                $this->mailer->send($this->message);
+
+            } catch (\Throwable $e) {
+                $this->log->fail($taskUnit);
+                continue;
             }
 
-            $RSA = openssl_get_privatekey($_ENV['MAIL_RSA_PRIV'], $_ENV['MAIL_RSA_PASSPHRASE']);
-            $signer = new \Swift_Signers_DKIMSigner($RSA, $_ENV['MAIL_DOMAIN'], $_ENV['MAIL_SELECTOR']);
-            $this->message->attachSigner($signer);
-
-            $this->mailer->send($this->message);
-
-        } catch (\Throwable $e) {
-            $this->log->fail($task);
-            return;
+            $this->log->success($taskUnit);
         }
+    }
 
-        $this->log->success($task);
+    private static function prepareUnit(Task $task, $destination)
+    {
+        $unit = clone $task;
+
+        $unit->destination = [$destination];
+
+        return $unit;
     }
 }
