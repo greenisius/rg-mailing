@@ -17,7 +17,7 @@ class Log
         Sentry\configureScope(function (Scope $scope) use ($task): void {
             $scope->setTag('destination', $task->destination[0]);
             $scope->setTag('theme', $task->theme);
-            $scope->setTag('content', $task->content);
+            $scope->setTag('content', str_replace("\n", '', $task->content));
             $scope->setTag('from', $task->sender);
         });
     }
