@@ -20,6 +20,24 @@ class Worker
         $this->worker->watch('email-notification');
     }
 
+    public function work()
+    {
+        $task = $this->task();
+
+        if ($task->isBulk()) {
+            $this->split($task);
+        } else {
+            $this->sender->send($task);
+        }
+
+        $this->worker->delete($this->job);
+    }
+
+    public function add(Task $task)
+    {
+        $this->worker->useTube('email-notification')->put(json_encode($task));
+    }
+
     private function task(): Task
     {
         $this->job = $this->worker->reserve();
@@ -27,14 +45,14 @@ class Worker
         return new Task(json_decode($this->job->getData(), true));
     }
 
-    public function work()
+    private function split($task)
     {
-        $task = $this->task();
+        foreach ($task->destination as $destination) {
+            $unit = clone $task;
 
-        $this->sender->send($task);
+            $unit->destination = [$destination];
 
-        $this->worker->delete($this->job);
+            $this->add($unit);
+        }
     }
-
-
 }

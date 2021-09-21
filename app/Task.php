@@ -18,4 +18,9 @@ class Task
             $this->$key = $value;
         }
     }
+
+    public function isBulk()
+    {
+        return count($this->destination) > 1;
+    }
 }
